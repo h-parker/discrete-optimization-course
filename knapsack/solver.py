@@ -23,19 +23,32 @@ def solve_it(input_data):
 
     # a trivial algorithm for filling the knapsack
     # it takes items in-order until the knapsack is full
+    # NOT FINAL SOLN.
+    # value = 0
+    # weight = 0
+    # taken = [0]*len(items)
+
+    # for item in items:
+    #     if weight + item.weight <= capacity:
+    #         taken[item.index] = 1
+    #         value += item.value
+    #         weight += item.weight
+
+
+    # soln above modified to make greedy -- grab in order of
+    # value per unit weight
+    # NOT FINAL SOLN
     value = 0
     weight = 0
     taken = [0]*len(items)
+
+    items = sorted(items, key=lambda x: x.value/x.weight, reverse=True)
 
     for item in items:
         if weight + item.weight <= capacity:
             taken[item.index] = 1
             value += item.value
             weight += item.weight
-
-
-
-
 
     
     # prepare the solution in the specified output format
