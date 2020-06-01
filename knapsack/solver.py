@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from collections import namedtuple
-Item = namedtuple("Item", ['index', 'value', 'weight'])
 
 def solve_it(input_data):
     # Modify this code to run your optimization algorithm
@@ -14,47 +13,37 @@ def solve_it(input_data):
     item_count = int(firstLine[0])
     capacity = int(firstLine[1])
 
-    items = [] #item[0] is val, item[1] is weight
+    item = []
 
     for i in range(1, item_count+1):
         line = lines[i]
         parts = line.split()
-        items.append(Item(i-1, int(parts[0]), int(parts[1])))
-
-    # a trivial algorithm for filling the knapsack
-    # it takes items in-order until the knapsack is full
-    # NOT FINAL SOLN.
-    # value = 0
-    # weight = 0
-    # taken = [0]*len(items)
-
-    # for item in items:
-    #     if weight + item.weight <= capacity:
-    #         taken[item.index] = 1
-    #         value += item.value
-    #         weight += item.weight
-
-
-    # soln above modified to make greedy -- grab in order of
-    # value per unit weight
-    # NOT FINAL SOLN
-    value = 0
-    weight = 0
-    taken = [0]*len(items)
-
-    items = sorted(items, key=lambda x: x.value/x.weight, reverse=True)
-
-    for item in items:
-        if weight + item.weight <= capacity:
-            taken[item.index] = 1
-            value += item.value
-            weight += item.weight
-
+        item.append(parts[0], parts[1])
+    print(item)
     
+
+    # fill in table of optimal values for k capacity with items 0-j
+    value_table = [['x' for i in range(item_count+1)] for i in range(capacity+1) ]
+
+    for j in range(item_count + 1):
+        for k in range(capacity + 1):
+            #import ipdb; ipdb.set_trace()
+            if j == 0 or k == 0:
+                value_table[k][j] = 0
+            elif k < item[j-1][1]:
+                value_table[k][j] = value_table[k][j-1]
+            else:
+                previous = value_table[k][j-1]
+                with_j = item[j-1][0] + value_table[k - item[j-1][1]][j - 1]
+                value_table[k][j] = max(previous, with_j)
+    
+    # backtrack to find optimal solution  
+
+
     # prepare the solution in the specified output format
-    output_data = str(value) + ' ' + str(0) + '\n'
-    output_data += ' '.join(map(str, taken))
-    return output_data
+    # output_data = str(value) + ' ' + str(0) + '\n'
+    # output_data += ' '.join(map(str, taken))
+    # return output_data
 
 
 if __name__ == '__main__':
